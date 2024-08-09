@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form')
+    const form = document.getElementById('form');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const authMsg = document.getElementById('auth-msg');
 
-        try{
-            const response = await fetch('http://localhost:4000/api/register', {
+        try {
+            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/register', {
                 method: 'POST',
-                headers:  {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, username, password })
@@ -20,14 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if(!response.ok) {
-                authMsg.textContent = data
+            if (!response.ok) {
+                authMsg.textContent = data;
             } else {
-                authMsg.textContent = data
+                authMsg.textContent = data;
             }
         } catch (err) {
-            authMsg.textContent = err
+            authMsg.textContent = `Error: ${err}`;
         }
-    })
-
-})
+    });
+});

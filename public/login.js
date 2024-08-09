@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form')
+    const form = document.getElementById('form');
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -8,28 +8,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         const authMsg = document.getElementById('auth-msg');
 
-        try{
-            const response = await fetch('http://localhost:4000/api/login', {
+        try {
+            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/login', {
                 method: 'POST',
-                headers:  {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json()
+            const data = await response.json();
 
-            if (data.userId) {
+            if (response.ok && data.userId) {
                 localStorage.setItem('userId', data.userId);
                 window.location.href = '/index.html';
             } else {
-                authMsg.textContent = 'Failed to retrieve userId';
+                authMsg.textContent = data;
             }
         } catch (err) {
-            authMsg.textContent = err
+            authMsg.textContent = `Error: ${err}`;
         }
-    })
-})
-
-
-// Open the Login webpage using: http://127.0.0.1:4000/login.html
+    });
+});

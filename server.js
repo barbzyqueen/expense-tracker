@@ -8,19 +8,25 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
 
-app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
 dotenv.config();
+
+// Middleware
+app.use(express.json());
+app.use(cors({
+    origin: 'https://roan-neon-outrigger.glitch.me', // Glitch frontend URL
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+}));
+app.use(cookieParser());
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));
 
-// Creating database connection
+// Database connection
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 // Check if database connection works
@@ -31,68 +37,50 @@ db.connect((err) => {
     }
     console.log('Connected to MySQL as id:', db.threadId);
 
-    // Create a database
-    db.query(`CREATE DATABASE IF NOT EXISTS expense_tracker_test`, (err, result) => {
-        if (err) return console.log(err);
-        console.log("Database expense_tracker_test created/checked");
+    // Create tables if they do not exist
+    const createTables = () => {
+        const usersTable = `CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(100) NOT NULL UNIQUE,
+            username VARCHAR(50) NOT NULL,
+            password VARCHAR(255)
+        )`;
 
-        // Change our database
-        db.changeUser({ database: 'expense_tracker_test' }, (err, result) => {
-            if (err) {
-                console.log("Error changing to database:", err);
-                return;
-            }
-            console.log("eexpense_tracker_test is in use");
+        const expenseTable = `CREATE TABLE IF NOT EXISTS expenses (
+            id INT AUTO_INCREMENT,
+            user_id INT NOT NULL,
+            category VARCHAR(50) DEFAULT NULL,
+            amount DECIMAL(10, 2) DEFAULT NULL,
+            date DATE DEFAULT NULL,
+            PRIMARY KEY(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )`;
 
-            // CREATE users table
-            const usersTable = `CREATE TABLE IF NOT EXISTS users(
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(100) NOT NULL UNIQUE,
-                username VARCHAR(50) NOT NULL,
-                password VARCHAR(255)
-            )`;
-
-            db.query(usersTable, (err, result) => {
-                if (err) return console.log(err);
-                console.log("Users table created/checked");
-            });
-
-            // CREATE expenses table
-            const expenseTable = `CREATE TABLE IF NOT EXISTS expenses(
-                id INT AUTO_INCREMENT,
-                user_id INT NOT NULL,
-                category VARCHAR(50) DEFAULT NULL,
-                amount DECIMAL(10, 2) DEFAULT NULL,
-                date DATE DEFAULT NULL,
-                PRIMARY KEY(id),
-                FOREIGN KEY (user_id) REFERENCES users(id)
-            )`;
-
-            db.query(expenseTable, (err, result) => {
-                if (err) return console.log(err);
-                console.log("Expense table created/checked");
-            });
-
-
-            // Create sessions table if it does not exist
-            const createSessionsTable = `
-            CREATE TABLE IF NOT EXISTS sessions (
+        const createSessionsTable = `
+        CREATE TABLE IF NOT EXISTS sessions (
             session_id varchar(128) COLLATE utf8mb4_bin NOT NULL,
             expires int(11) unsigned NOT NULL,
             data text COLLATE utf8mb4_bin,
             PRIMARY KEY (session_id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;`;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;`;
 
-            db.query(createSessionsTable, (err, result) => {
-            if (err) {
-                console.error("Error creating sessions table:", err);
-                return;
-            }
-            console.log("Sessions table created/checked");
-            });
-
+        db.query(usersTable, (err) => {
+            if (err) console.log("Error creating users table:", err);
+            else console.log("Users table created/checked");
         });
-    });
+
+        db.query(expenseTable, (err) => {
+            if (err) console.log("Error creating expenses table:", err);
+            else console.log("Expense table created/checked");
+        });
+
+        db.query(createSessionsTable, (err) => {
+            if (err) console.error("Error creating sessions table:", err);
+            else console.log("Sessions table created/checked");
+        });
+    };
+
+    createTables();
 });
 
 // Session store configuration
@@ -101,14 +89,14 @@ const sessionStore = new MySQLStore({}, db.promise());
 // Session middleware
 app.use(session({
     key: 'user_sid',
-    secret: 'your_secret_key',
+    secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
         maxAge: 600000,
-        httpOnly: true, // Helps mitigate XSS attacks
-        secure: false // Set to true if using HTTPS
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' // Set to true if using HTTPS
     }
 }));
 
@@ -119,8 +107,6 @@ app.use((req, res, next) => {
     }
     next();
 });
-
-
 
 // User registration route
 app.post('/api/register', async (req, res) => {
@@ -136,7 +122,7 @@ app.post('/api/register', async (req, res) => {
 
             const newUser = `INSERT INTO users(email, username, password) VALUES(?)`;
             const value = [req.body.email, req.body.username, hashedPassword];
-            db.query(newUser, [value], (err, data) => {
+            db.query(newUser, [value], (err) => {
                 if (err) {
                     console.log("Error inserting user:", err);
                     return res.status(400).json("Something went wrong");
@@ -168,7 +154,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-
 // Endpoint to get current user information
 app.get('/api/current-user', (req, res) => {
     if (req.session.user) {
@@ -177,7 +162,6 @@ app.get('/api/current-user', (req, res) => {
         res.status(401).json({ message: 'Not authenticated' });
     }
 });
-
 
 // Middleware to check if the user is authenticated
 function authenticateUser(req, res, next) {
@@ -195,7 +179,7 @@ app.post('/api/expenses', authenticateUser, (req, res) => {
     const addExpenseQuery = `INSERT INTO expenses (user_id, category, amount, date) VALUES (?, ?, ?, ?)`;
     const values = [userId, category, amount, date];
 
-    db.query(addExpenseQuery, values, (err, result) => {
+    db.query(addExpenseQuery, values, (err) => {
         if (err) {
             return res.status(400).json("Error adding expense");
         }
@@ -275,9 +259,10 @@ app.get('/api/check-session', (req, res) => {
     }
 });
 
-// Starts our server
-app.listen(4000, () => {
-    console.log('server is running on PORT 4000...');
+// Start server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server is running on PORT ${PORT}...`);
 });
 
 // Serve the homepage

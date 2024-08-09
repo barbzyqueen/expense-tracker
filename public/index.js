@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    fetch('/api/current-user')
+    fetch('https://roan-neon-outrigger.glitch.me/api/current-user')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Not authenticated');
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to check if the user is logged in
     async function checkLogin() {
         try {
-            const response = await fetch('http://localhost:4000/api/check-session', {
+            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/check-session', {
                 method: 'GET',
                 credentials: 'include' // Important: send cookies with the request
             });
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch('http://localhost:4000/api/expenses', {
+                const response = await fetch('https://roan-neon-outrigger.glitch.me/api/expenses', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch(`http://localhost:4000/api/expenses/${expenseId}`, {
+                const response = await fetch(`https://roan-neon-outrigger.glitch.me/api/expenses/${expenseId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch(`http://localhost:4000/api/expenses/${expenseId}`, {
+            const response = await fetch(`https://roan-neon-outrigger.glitch.me/api/expenses/${expenseId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch('http://localhost:4000/api/expenses', {
+            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/expenses', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for logout button
     document.getElementById('logout-btn').addEventListener('click', async () => {
         try {
-            const response = await fetch('http://localhost:4000/api/logout', {
+            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/logout', {
                 method: 'POST',
                 credentials: 'include' // Important to send cookies with the request
             });
