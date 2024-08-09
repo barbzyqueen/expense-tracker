@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const authMsg = document.getElementById('auth-msg');
 
         try {
-            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/register', {
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/register', { // Updated URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,12 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (!response.ok) {
-                authMsg.textContent = data;
+                authMsg.textContent = `Error: ${data}`;
+                authMsg.style.color = 'red';
             } else {
-                authMsg.textContent = data;
+                authMsg.textContent = 'Registration successful! You can now log in.';
+                authMsg.style.color = 'green';
+                form.reset(); // Optional: Reset the form after successful registration
             }
         } catch (err) {
             authMsg.textContent = `Error: ${err}`;
+            authMsg.style.color = 'red';
         }
     });
 });

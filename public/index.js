@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    fetch('https://roan-neon-outrigger.glitch.me/api/current-user')
+    fetch('https://expense-tracker-omega-neon-97.vercel.app/api/current-user') // Updated URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Not authenticated');
@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error fetching user info:', error);
-            // Redirect to login page or show login prompt
+            window.location.href = '/login.html'; // Redirect to login page if not authenticated
         });
 
     // Function to check if the user is logged in
     async function checkLogin() {
         try {
-            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/check-session', {
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/check-session', { // Updated URL
                 method: 'GET',
                 credentials: 'include' // Important: send cookies with the request
             });
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Not authenticated');
             }
         } catch (err) {
-            window.location.href = '/login.html';
+            window.location.href = '/login.html'; // Redirect to login page if not authenticated
         }
     }
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch('https://roan-neon-outrigger.glitch.me/api/expenses', {
+                const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/expenses', { // Updated URL
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -62,11 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     statusDiv.textContent = data;
                 } else {
                     statusDiv.textContent = "Transaction added successfully";
+                    statusDiv.style.color = 'green';
                     transactionForm.reset();
                     loadTransactions(); // Refresh the transactions list
                 }
             } catch (err) {
-                statusDiv.textContent = err;
+                statusDiv.textContent = `Error: ${err.message}`;
+                statusDiv.style.color = 'red';
             }
         });
     }
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch(`https://roan-neon-outrigger.glitch.me/api/expenses/${expenseId}`, {
+                const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/api/expenses/${expenseId}`, { // Updated URL
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -99,12 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     statusDiv.textContent = data;
                 } else {
                     statusDiv.textContent = "Expense updated successfully";
+                    statusDiv.style.color = 'green';
                     editExpenseForm.reset();
                     document.getElementById('editExpenseFormContainer').style.display = 'none';
                     loadTransactions(); // Refresh the transactions list
                 }
             } catch (err) {
-                statusDiv.textContent = err;
+                statusDiv.textContent = `Error: ${err.message}`;
+                statusDiv.style.color = 'red';
             }
         });
     }
@@ -114,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch(`https://roan-neon-outrigger.glitch.me/api/expenses/${expenseId}`, {
+            const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/api/expenses/${expenseId}`, { // Updated URL
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -128,10 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDiv.textContent = data;
             } else {
                 statusDiv.textContent = "Transaction deleted successfully";
+                statusDiv.style.color = 'green';
                 loadTransactions(); // Refresh the transactions list
             }
         } catch (err) {
-            statusDiv.textContent = err;
+            statusDiv.textContent = `Error: ${err.message}`;
+            statusDiv.style.color = 'red';
         }
     }
 
@@ -141,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/expenses', {
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/expenses', { // Updated URL
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -178,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             statusDiv.textContent = `Error: ${err.message}`;
+            statusDiv.style.color = 'red';
         }
     }
 
@@ -196,13 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for logout button
     document.getElementById('logout-btn').addEventListener('click', async () => {
         try {
-            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/logout', {
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/logout', { // Updated URL
                 method: 'POST',
                 credentials: 'include' // Important to send cookies with the request
             });
 
             if (response.ok) {
-                window.location.href = 'login.html'; // Redirect to login page or home page
+                window.location.href = 'login.html'; // Redirect to login page after logout
             } else {
                 console.error('Logout failed');
             }

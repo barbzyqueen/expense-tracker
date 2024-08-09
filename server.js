@@ -13,7 +13,7 @@ dotenv.config();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'https://roan-neon-outrigger.glitch.me', // Glitch frontend URL
+    origin: 'https://expense-tracker-omega-neon-97.vercel.app', // Vercel frontend URL
     credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
 app.use(cookieParser());

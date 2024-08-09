@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('form');
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const authMsg = document.getElementById('auth-msg');
 
         try {
-            const response = await fetch('https://roan-neon-outrigger.glitch.me/api/login', {
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/login', { // Updated URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,12 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok && data.userId) {
                 localStorage.setItem('userId', data.userId);
-                window.location.href = '/index.html';
+                window.location.href = '/index.html'; // Redirect to the homepage after login
             } else {
-                authMsg.textContent = data;
+                authMsg.textContent = `Login failed: ${data}`;
+                authMsg.style.color = 'red';
             }
         } catch (err) {
             authMsg.textContent = `Error: ${err}`;
+            authMsg.style.color = 'red';
         }
     });
 });
