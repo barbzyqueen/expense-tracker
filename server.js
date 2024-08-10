@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 dotenv.config();
 
@@ -271,7 +272,7 @@ app.get('/register', (req, res) => {
 });
 
 // Serve the expenses page (protected route)
-app.get('/index.html', authenticateUser, (req, res) => {
+app.get('/expenses', authenticateUser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
