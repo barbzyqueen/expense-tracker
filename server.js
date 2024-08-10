@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
-// const path = require('path');
+const path = require('path');
 
 dotenv.config();
 
