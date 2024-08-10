@@ -139,7 +139,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // User login route
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const users = `SELECT * FROM users WHERE email = ?`;
         db.query(users, [req.body.email], (err, data) => {
@@ -157,7 +157,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Endpoint to get current user information
-app.get('/api/current-user', (req, res) => {
+app.get('/current-user', (req, res) => {
     if (req.session.user) {
         res.status(200).json({ username: req.session.user.username });
     } else {
@@ -174,7 +174,7 @@ function authenticateUser(req, res, next) {
 }
 
 // Route to add a new expense
-app.post('/api/expenses', authenticateUser, (req, res) => {
+app.post('/expenses', authenticateUser, (req, res) => {
     const { category, amount, date } = req.body;
     const userId = req.session.user.id;
 
@@ -190,7 +190,7 @@ app.post('/api/expenses', authenticateUser, (req, res) => {
 });
 
 // Route to get all expenses for the authenticated user
-app.get('/api/expenses', authenticateUser, (req, res) => {
+app.get('/expenses', authenticateUser, (req, res) => {
     const userId = req.session.user.id;
 
     const getExpensesQuery = `SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC`;
@@ -204,7 +204,7 @@ app.get('/api/expenses', authenticateUser, (req, res) => {
 });
 
 // Route to update an existing expense
-app.put('/api/expenses/:id', authenticateUser, (req, res) => {
+app.put('/expenses/:id', authenticateUser, (req, res) => {
     const expenseId = req.params.id;
     const { category, amount, date } = req.body;
     const userId = req.session.user.id;
@@ -224,7 +224,7 @@ app.put('/api/expenses/:id', authenticateUser, (req, res) => {
 });
 
 // Route to delete an existing expense
-app.delete('/api/expenses/:id', authenticateUser, (req, res) => {
+app.delete('/expenses/:id', authenticateUser, (req, res) => {
     const expenseId = req.params.id;
     const userId = req.session.user.id;
 
@@ -242,7 +242,7 @@ app.delete('/api/expenses/:id', authenticateUser, (req, res) => {
 });
 
 // Logout route
-app.post('/api/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json("Error logging out");
@@ -253,7 +253,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 // Route to check session status
-app.get('/api/check-session', (req, res) => {
+app.get('/check-session', (req, res) => {
     if (req.session.user) {
         res.status(200).json({ userId: req.session.user.id });
     } else {
