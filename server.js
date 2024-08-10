@@ -138,6 +138,18 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// database connection route
+
+app.get('/db-test', (req, res) => {
+    db.query('SELECT 1', (err, result) => {
+        if (err) {
+            res.status(500).json({ message: 'Database connection failed', error: err });
+        } else {
+            res.status(200).json({ message: 'Database connection successful', result });
+        }
+    });
+});
+
 // User login route
 app.post('/login', async (req, res) => {
     try {
