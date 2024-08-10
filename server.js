@@ -271,8 +271,8 @@ app.get('/register', (req, res) => {
 });
 
 // Serve the expenses page (protected route)
-app.get('/expenses', authenticateUser, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/expenses.html'));
+app.get('/index.html', authenticateUser, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Serve the homepage
