@@ -278,6 +278,12 @@ app.get('/check-session', (req, res) => {
     }
 });
 
+
+// Serve the homepage
+app.get('/', (req, res) => {
+    res.send("Welcome to the Expense Tracker");
+});
+
 // Serve the login page
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/login.html'));
@@ -293,10 +299,7 @@ app.get('/expenses', authenticateUser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Serve the homepage
-app.get('/', (req, res) => {
-    res.send("Welcome to the Expense Tracker");
-});
+
 
 
 
