@@ -116,6 +116,10 @@ app.post('/register', async (req, res) => {
         console.log("Received registration request:", req.body);
         const users = `SELECT * FROM users WHERE email = ?`;
         db.query(users, [req.body.email], (err, data) => {
+            if (err) {
+                console.error("Error querying users:", err);
+                return res.status(500).json("Database error");
+            }
             if (data.length > 0) return res.status(409).json("User already exists");
 
             // Hashing password
@@ -137,6 +141,7 @@ app.post('/register', async (req, res) => {
         res.status(500).json("Internal Server Error");
     }
 });
+
 
 // database connection route
 
