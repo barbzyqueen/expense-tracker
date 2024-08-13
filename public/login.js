@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const authMsg = document.getElementById('auth-msg');
 
         try {
-            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/login', { // Updated URL
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/login', { // Updated URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

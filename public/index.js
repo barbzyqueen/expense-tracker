@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    fetch('https://expense-tracker-omega-neon-97.vercel.app/api/current-user') // Updated URL
+    fetch('https://expense-tracker-omega-neon-97.vercel.app/current-user') // Updated URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Not authenticated');
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to check if the user is logged in
     async function checkLogin() {
         try {
-            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/check-session', { // Updated URL
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/check-session', { // Updated URL
                 method: 'GET',
                 credentials: 'include' // Important: send cookies with the request
             });
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/expenses', { // Updated URL
+                const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/expenses', { // Updated URL
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusDiv = document.getElementById('status');
 
             try {
-                const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/api/expenses/${expenseId}`, { // Updated URL
+                const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/expenses/${expenseId}`, { // Updated URL
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/api/expenses/${expenseId}`, { // Updated URL
+            const response = await fetch(`https://expense-tracker-omega-neon-97.vercel.app/expenses/${expenseId}`, { // Updated URL
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusDiv = document.getElementById('status');
 
         try {
-            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/expenses', { // Updated URL
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/expenses', { // Updated URL
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for logout button
     document.getElementById('logout-btn').addEventListener('click', async () => {
         try {
-            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/api/logout', { // Updated URL
+            const response = await fetch('https://expense-tracker-omega-neon-97.vercel.app/logout', { // Updated URL
                 method: 'POST',
                 credentials: 'include' // Important to send cookies with the request
             });
